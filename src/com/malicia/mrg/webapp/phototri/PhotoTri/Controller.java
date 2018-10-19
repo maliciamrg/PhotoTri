@@ -61,10 +61,13 @@ public class Controller {
         FileInputStream input = null;
         String fichier = fileSelect.getSelectionModel().getSelectedItem().toString();
         try {
+            //ExifReader exi = new ExifReader(new String[]{fichier});
+
             input = new FileInputStream(fichier);
             Image image = new Image(input);
             imagefileSelect.setImage(image);
- //           fileDateTime.setText(mod.getExifFrom(fichier));
+
+            fileDateTime.setText(ExifReader.printImageTags (fichier));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
