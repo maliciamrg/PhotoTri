@@ -1,6 +1,7 @@
 package com.malicia.mrg.photo.app.phototri;
 
 import com.malicia.mrg.photo.exifreader.ExifReader;
+import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,10 +24,10 @@ public class Controller {
     private Text ChooseRepertoryNew;
 
     @FXML
-    private ListView<?> fileSelect;
+    private ListView<String> fileSelect;
 
     @FXML
-    private ListView<?> folderSelect;
+    private ListView<GroupeDePhoto> folderSelect;
 
     @FXML
     private Text fileDateTime;

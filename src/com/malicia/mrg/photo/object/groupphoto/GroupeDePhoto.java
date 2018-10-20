@@ -4,6 +4,7 @@ import com.malicia.mrg.photo.exifreader.ExifReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +24,7 @@ public class GroupeDePhoto
 	String name;
 	String dateDebyyyymmjj;
 	String dateFinyyyymmjj;
-    List<String> listFiles;
+    ObservableList<String> listFiles;
 
 	public GroupeDePhoto( String pathin)
 	{
@@ -31,18 +32,6 @@ public class GroupeDePhoto
         String partpath=path;
         this.name=partpath;
         initialize();
-    }
-	public GroupeDePhoto()
-        {
-            this.name="mixed";
-            initialize();
-        }
-
-    private void initialize() {
-        this.nbFichier =0;
-        this.dateDebyyyymmjj="99991231";
-        this.dateFinyyyymmjj="00010101";
-
         //boucle fichier du repertoire
         ObservableList data = FXCollections.observableArrayList();
         try (Stream<Path> paths = Files.walk(Paths.get(this.path))) {
@@ -55,6 +44,18 @@ public class GroupeDePhoto
             e.printStackTrace();
         }
         //
+    }
+	public GroupeDePhoto()
+        {
+            this.name="mixed";
+            initialize();
+        }
+
+    private void initialize() {
+        this.nbFichier =0;
+        this.dateDebyyyymmjj="20991231";
+        this.dateFinyyyymmjj="00010101";
+        this.listFiles = FXCollections.observableArrayList();
     }
 
     public Boolean isElegible(String p0)
@@ -115,7 +116,7 @@ public class GroupeDePhoto
         return fileLow.endsWith(".jpg") || fileLow.endsWith(".jpeg") || fileLow.endsWith(".png") || fileLow.endsWith(".mp4") || fileLow.endsWith(".arw");
     }
 
-    public ObservableList getListFiles() {
-        return (ObservableList) listFiles;
+    public ObservableList<String> getListFiles() {
+        return listFiles;
     }
 }

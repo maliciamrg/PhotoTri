@@ -1,9 +1,9 @@
 package com.malicia.mrg.photo.app.phototri;
 
 import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class Model extends Window {
 
     private GroupeDePhoto grpPhotoNew;
-    private List<GroupeDePhoto> grpListPhotoRepertoire;
+    private ObservableList<GroupeDePhoto> grpListPhotoRepertoire;
 
     public String getRepertory(){
         DirectoryChooser directoryChooser = new DirectoryChooser ();
@@ -28,7 +28,7 @@ public class Model extends Window {
         return selectedDirectory.getAbsolutePath() ;
     }
 
-    public ObservableList populateFile( String repertoire) {
+    public ObservableList<String> populateFile( String repertoire) {
         grpPhotoNew = new GroupeDePhoto();
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
             paths
@@ -42,7 +42,8 @@ public class Model extends Window {
     }
 
 
-    public ObservableList populateRepertory( String repertoire) {
+    public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
+        ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
             paths
                     .filter( Files::isDirectory)
@@ -51,7 +52,7 @@ public class Model extends Window {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return (ObservableList) grpListPhotoRepertoire;
+        return grpListPhotoRepertoire;
     }
 
 
