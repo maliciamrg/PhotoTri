@@ -42,7 +42,7 @@ public class Model extends Window {
         fileSelect.setItems(data);
     }
 
-    private boolean filterSelectionFile(Path p) {
+    public static boolean filterSelectionFile(Path p) {
         String fileLow = p.toString().toLowerCase();
         return fileLow.endsWith(".jpg") || fileLow.endsWith(".jpeg") || fileLow.endsWith(".png") || fileLow.endsWith(".mp4") || fileLow.endsWith(".arw");
     }
@@ -62,7 +62,7 @@ public class Model extends Window {
     }
 
     private void analyseFile(Path x, ObservableList data) {
-        data.add(x);
+        data.add(new RepertoirePhoto(x.toString()).toString());
     }
 
     private void alertinfo(String title,String header,String content) {
