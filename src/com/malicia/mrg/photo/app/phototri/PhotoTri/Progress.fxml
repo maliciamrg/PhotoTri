@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malicia.mrg.photo.app.phototri.PhotoTri.Progress">
+   <children>
+      <ProgressBar fx:id="progressB" layoutX="21.0" layoutY="28.0" prefHeight="18.0" prefWidth="553.0" progress="0.0" />
+      <Text fx:id="textUp" layoutX="21.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="553.000009059906" />
+      <Text fx:id="textMiddle" layoutX="23.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="553.000009059906" />
+      <TextArea fx:id="TextBox" layoutX="21.0" layoutY="62.0" prefHeight="200.0" prefWidth="553.0" />
+   </children>
+</AnchorPane>

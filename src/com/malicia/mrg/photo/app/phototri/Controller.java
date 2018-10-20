@@ -1,7 +1,8 @@
-package com.malicia.mrg.webapp.phototri.PhotoTri;
+package com.malicia.mrg.photo.app.phototri;
 
+import com.malicia.mrg.photo.exifreader.ExifReader;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -37,9 +38,6 @@ public class Controller {
     private ImageView imagefileSelect;
 
     @FXML
-    private ProgressBar progressBar;
-
-    @FXML
     void TransfertFile() {
 
     }
@@ -47,13 +45,13 @@ public class Controller {
     @FXML
     void chooseRepertoryGroup() {
         ChooseRepertoryGroup.setText(mod.getRepertory());
-        mod.populateRepertory(folderSelect ,ChooseRepertoryGroup.getText() ,progressBar);
+        folderSelect.setItems(mod.populateRepertory(ChooseRepertoryGroup.getText()));
     }
 
     @FXML
     void chooseRepertoryNew() {
         ChooseRepertoryNew.setText(mod.getRepertory());
-        mod.populateFile(fileSelect ,ChooseRepertoryNew.getText() );
+        fileSelect.setItems(mod.populateFile(ChooseRepertoryNew.getText()));
     }
 
     @FXML

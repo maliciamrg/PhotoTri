@@ -1,4 +1,4 @@
-package com.malicia.mrg.webapp.phototri.PhotoTri;
+package com.malicia.mrg.photo.exifreader;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;

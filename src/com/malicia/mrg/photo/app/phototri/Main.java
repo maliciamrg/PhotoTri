@@ -1,4 +1,4 @@
-package com.malicia.mrg.webapp.phototri.PhotoTri;
+package com.malicia.mrg.photo.app.phototri;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("master.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Master.fxml"));
         primaryStage.setTitle("Photo Tri");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="799.0" prefWidth="927.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malicia.mrg.webapp.phototri.PhotoTri.Controller">
+<AnchorPane prefHeight="799.0" prefWidth="927.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.malicia.mrg.photo.app.phototri.Controller">
     <children>
         <Label layoutX="14.0" layoutY="14.0" text="Repertoire fichiers nouveaux" />
         <Label layoutX="383.0" layoutY="14.0" text="Repertoire des group de photo" />
@@ -19,6 +19,5 @@
         <Button fx:id="transfertFile" layoutX="254.0" layoutY="188.0" mnemonicParsing="false" onAction="#TransfertFile" prefHeight="25.0" prefWidth="119.0" text="Transfert ==&gt;" />
         <ImageView fx:id="imagefileSelect" fitHeight="284.0" fitWidth="356.0" layoutX="14.0" layoutY="501.0" pickOnBounds="true" preserveRatio="true" />
         <Text fx:id="fileDateTime" layoutX="14.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="231.0000027269125" />
-        <ProgressBar fx:id="progressBar" layoutX="586.0" layoutY="14.0" prefHeight="18.0" prefWidth="308.0" progress="0.0" />
     </children>
 </AnchorPane>
