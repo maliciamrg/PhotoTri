@@ -21,6 +21,11 @@ public class GroupeDePhoto
 	}
 
 	int nbFichier;
+
+	public String getPath() {
+		return path;
+	}
+
 	String path;
 	String name;
 	String dateDebyyyymmjj;
@@ -69,7 +74,7 @@ public class GroupeDePhoto
 
     public Boolean isElegible(String p0)
 	{
-		if (p0.compareTo(dateDebyyyymmjj)>0 && p0.compareTo(dateFinyyyymmjj)<0 ){
+		if (p0.compareTo(dateDebyyyymmjj)>=0 && p0.compareTo(dateFinyyyymmjj)<=0 ){
 			return true;
 		}
 		return false;

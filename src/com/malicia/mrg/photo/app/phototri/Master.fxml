@@ -14,9 +14,9 @@
         <Label layoutX="383.0" layoutY="14.0" text="Repertoire des group de photo" />
         <Text fx:id="ChooseRepertoryGroup" layoutX="383.0" layoutY="44.0" onMouseClicked="#chooseRepertoryGroup" strokeType="OUTSIDE" strokeWidth="0.0" text="choose here..." wrappingWidth="369.13671875" />
         <Text fx:id="ChooseRepertoryNew" layoutX="14.0" layoutY="44.0" onMouseClicked="#chooseRepertoryNew" strokeType="OUTSIDE" strokeWidth="0.0" text="choose here..." wrappingWidth="369.13671875" />
-        <ListView fx:id="fileSelect" layoutX="14.0" layoutY="48.0" onMouseClicked="#previewPhoto" prefHeight="432.0" prefWidth="231.0" />
-        <ListView fx:id="folderSelect" layoutX="383.0" layoutY="48.0" prefHeight="742.0" prefWidth="544.0" />
-        <Button fx:id="transfertFile" layoutX="254.0" layoutY="188.0" mnemonicParsing="false" onAction="#TransfertFile" prefHeight="25.0" prefWidth="119.0" text="Transfert ==&gt;" />
+        <ListView fx:id="fileSelect" layoutX="14.0" layoutY="48.0" onMouseClicked="#actionfileSelect" prefHeight="432.0" prefWidth="231.0" />
+        <ListView fx:id="folderSelect" layoutX="383.0" layoutY="48.0" onMouseClicked="#actionFolderSelect" prefHeight="742.0" prefWidth="544.0" />
+        <Button fx:id="transfertFile" layoutX="254.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionTransfertFile" prefHeight="25.0" prefWidth="119.0" text="Transfert ==&gt;" />
         <ImageView fx:id="imagefileSelect" fitHeight="284.0" fitWidth="356.0" layoutX="14.0" layoutY="501.0" pickOnBounds="true" preserveRatio="true" />
         <Text fx:id="fileDateTime" layoutX="14.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="231.0000027269125" />
     </children>

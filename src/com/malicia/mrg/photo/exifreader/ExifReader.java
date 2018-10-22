@@ -16,33 +16,30 @@ import java.util.Iterator;
 public class ExifReader
 {
 
-    /**
-     * 读取照片里面的信息
-     */
     public static String printImageTags(String filename){
         File file = new File( filename );
         Metadata metadata = null;
         try {
             metadata = ImageMetadataReader.readMetadata(file);
-        String createDate = null;
-        String lat = null;
-        String lon = null;
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                String tagName = tag.getTagName();
-                String desc = tag.getDescription();
-                switch (tagName) {
-                    case "Date/Time Original":
-                        return desc.split(" ")[0].replace(":", "");
-                    case "GPS Latitude":
-                        lat = desc;
-                        break;
-                    case "GPS Longitude":
-                        lon = desc;
-                        break;
+            String createDate = null;
+            String lat = null;
+            String lon = null;
+            for (Directory directory : metadata.getDirectories()) {
+                for (Tag tag : directory.getTags()) {
+                    String tagName = tag.getTagName();
+                    String desc = tag.getDescription();
+                    switch (tagName) {
+                        case "Date/Time Original":
+                            return desc.split(" ")[0].replace(":", "");
+                        case "GPS Latitude":
+                            lat = desc;
+                            break;
+                        case "GPS Longitude":
+                            lon = desc;
+                            break;
+                    }
                 }
             }
-        }
         } catch (ImageProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {
