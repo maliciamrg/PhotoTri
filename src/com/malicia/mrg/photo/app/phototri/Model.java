@@ -50,6 +50,7 @@ public class Model extends Window {
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
             paths
                     .filter( Files::isDirectory)
+
                     .distinct()
                     .forEach((x -> isAdd(grpListPhotoRepertoire, x)));
         } catch (IOException e) {
@@ -60,10 +61,17 @@ public class Model extends Window {
         return grpListPhotoRepertoire;
     }
 
-    private boolean isAdd(ObservableList<GroupeDePhoto> grpListPhotoRepertoire, Path x) {
-        GroupeDePhoto dePhoto = new GroupeDePhoto(x.toString());
- //       MessagePerso.addText(dePhoto.toStringInfo());
-        return grpListPhotoRepertoire.add(dePhoto);
+    private void isAdd(ObservableList<GroupeDePhoto> grpListPhotoRepertoire, Path x) {
+
+        String pathString = x.toString().toLowerCase();
+        if (!pathString.contains("rejet") &&
+            !pathString.contains("@") &&
+            !pathString.contains("&") &&
+            !pathString.contains("!!") ) {
+            GroupeDePhoto dePhoto = new GroupeDePhoto(x.toString());
+            //       MessagePerso.addText(dePhoto.toStringInfo());
+            grpListPhotoRepertoire.add(dePhoto);
+        };
     }
 
 

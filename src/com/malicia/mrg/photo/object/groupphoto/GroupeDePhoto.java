@@ -42,7 +42,7 @@ public class GroupeDePhoto
         String[] nameSplit = partpath.split(Pattern.quote("\\"));
         String nameOne = nameSplit[nameSplit.length - 1];
         if (nameOne.toLowerCase().compareTo("rejet")==0) {
-            nameOne = nameSplit[nameSplit.length - 2];
+            nameOne = nameSplit[nameSplit.length - 2]+"_"+nameSplit[nameSplit.length - 1];
         }
         this.name=nameOne;
         initialize();

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -19,5 +19,6 @@
         <Button fx:id="transfertFile" layoutX="254.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionTransfertFile" prefHeight="25.0" prefWidth="119.0" text="Transfert ==&gt;" />
         <ImageView fx:id="imagefileSelect" fitHeight="284.0" fitWidth="356.0" layoutX="14.0" layoutY="501.0" pickOnBounds="true" preserveRatio="true" />
         <Text fx:id="fileDateTime" layoutX="14.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="231.0000027269125" />
+      <ToggleButton fx:id="choixDuSens" layoutX="269.0" layoutY="96.0" mnemonicParsing="false" onAction="#switchSens" text="ToggleButton" />
     </children>
 </AnchorPane>

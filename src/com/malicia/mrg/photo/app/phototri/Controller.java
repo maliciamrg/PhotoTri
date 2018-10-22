@@ -6,13 +6,10 @@ import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
-import javafx.scene.control.ProgressBar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,14 +43,34 @@ public class Controller {
 
     @FXML
     private ImageView imagefileSelect;
+
+    @FXML
+    private ToggleButton choixDuSens;
+
+    @FXML
+    void switchSens() {}
+
+
+    @FXML
     private ObservableList<GroupeDePhoto> popRepertory;
     private ObservableList<String> popRepNew;
 
+    public void initialize() {
+        ChooseRepertoryNew.setText("D:\\50_Phototheque\\@New");
+        chooseRepertoryNewFromChoose();
+        ChooseRepertoryGroup.setText("D:\\50_Phototheque");
+        chooseRepertoryGroupFromChoose();
+    }
+
     @FXML
     void chooseRepertoryGroup() {
+        ChooseRepertoryGroup.setText(mod.getRepertory());
+        chooseRepertoryGroupFromChoose();
+    }
+
+    private void chooseRepertoryGroupFromChoose() {
         folderSelect.getSelectionModel().clearSelection();
         folderSelect.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        ChooseRepertoryGroup.setText(mod.getRepertory());
         popRepertory = mod.populateRepertory(ChooseRepertoryGroup.getText());
         folderSelect.setItems(popRepertory);
     }
@@ -61,6 +78,10 @@ public class Controller {
     @FXML
     void chooseRepertoryNew() {
         ChooseRepertoryNew.setText(mod.getRepertory());
+        chooseRepertoryNewFromChoose();
+    }
+    @FXML
+    void chooseRepertoryNewFromChoose() {
         popRepNew = mod.populateFile(ChooseRepertoryNew.getText());
         fileSelect.setItems(popRepNew);
         fileSelect.getItems().addListener(new ListChangeListener() {
@@ -81,7 +102,11 @@ public class Controller {
         String fichier = fileSelect.getSelectionModel().getSelectedItem().toString();
         //ExifReader exi = new ExifReader(new String[]{fichier});
 
-        //imagefileSelect.setImage(new Image(new FileInputStream(fichier)));
+        try {
+            imagefileSelect.setImage(new Image(new FileInputStream(fichier)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         String printImageTags = ExifReader.printImageTags(fichier);
         fileDateTime.setText(printImageTags);
