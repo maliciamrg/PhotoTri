@@ -8,9 +8,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+
+    private static Stage pStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Master.fxml"));
+        pStage = primaryStage;
         primaryStage.setTitle("Photo Tri");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -20,4 +24,9 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    public static Stage getPrimaryStage() {
+        return pStage;
+    }
+
 }

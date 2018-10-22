@@ -1,5 +1,7 @@
 package com.malicia.mrg.photo.app.phototri;
 
+import com.malicia.mrg.object.MessagePerso;
+import com.malicia.mrg.object.Toast;
 import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +32,7 @@ public class Model extends Window {
 
     public ObservableList<String> populateFile( String repertoire) {
         grpPhotoNew = new GroupeDePhoto();
-        try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(repertoire),1)) {
             paths
                     .filter(path -> Files.isRegularFile(path))
                     .distinct()
@@ -43,16 +45,25 @@ public class Model extends Window {
 
 
     public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
+ //       MessagePerso.makeText(Main.getPrimaryStage(),"populateRepertory") ;
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
             paths
                     .filter( Files::isDirectory)
                     .distinct()
-                    .forEach((x -> grpListPhotoRepertoire.add(new GroupeDePhoto(x.toString()))));
+                    .forEach((x -> isAdd(grpListPhotoRepertoire, x)));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        java.util.Collections.sort(grpListPhotoRepertoire,(o1, o2) -> GroupeDePhoto.compare(o1,o2) );
+ //       MessagePerso.killText();
         return grpListPhotoRepertoire;
+    }
+
+    private boolean isAdd(ObservableList<GroupeDePhoto> grpListPhotoRepertoire, Path x) {
+        GroupeDePhoto dePhoto = new GroupeDePhoto(x.toString());
+ //       MessagePerso.addText(dePhoto.toStringInfo());
+        return grpListPhotoRepertoire.add(dePhoto);
     }
 
 

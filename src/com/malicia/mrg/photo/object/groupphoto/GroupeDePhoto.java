@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class GroupeDePhoto
@@ -24,17 +25,25 @@ public class GroupeDePhoto
 	String name;
 	String dateDebyyyymmjj;
 	String dateFinyyyymmjj;
+
+	String keyOrder;
     ObservableList<String> listFiles;
 
 	public GroupeDePhoto( String pathin)
 	{
         this.path = pathin;
         String partpath=path;
-        this.name=partpath;
+
+        String[] nameSplit = partpath.split(Pattern.quote("\\"));
+        String nameOne = nameSplit[nameSplit.length - 1];
+        if (nameOne.toLowerCase().compareTo("rejet")==0) {
+            nameOne = nameSplit[nameSplit.length - 2];
+        }
+        this.name=nameOne;
         initialize();
         //boucle fichier du repertoire
         ObservableList data = FXCollections.observableArrayList();
-        try (Stream<Path> paths = Files.walk(Paths.get(this.path))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(this.path),1)) {
             paths
                     .filter(path -> Files.isRegularFile(path))
                     .filter(p -> filterSelectionFile(p))
@@ -87,7 +96,7 @@ public class GroupeDePhoto
 
 	private void setDateDebyyyymmjj(String dateDebyyyymmjjin)
 	{
-		if (dateDebyyyymmjjin.compareTo(dateDebyyyymmjj)<0 ){
+		if (dateDebyyyymmjjin.compareTo(dateDebyyyymmjj)<0 && dateDebyyyymmjjin.compareTo("")>0){
 		this.dateDebyyyymmjj = dateDebyyyymmjjin;
 		}
 	}
@@ -95,7 +104,7 @@ public class GroupeDePhoto
 	
 	private void setDateFinyyyymmjj(String dateFinyyyymmjjin)
 	{
-		if (dateFinyyyymmjjin.compareTo(dateFinyyyymmjj)>0 ){
+		if (dateFinyyyymmjjin.compareTo(dateFinyyyymmjj)>0 && dateFinyyyymmjjin.compareTo("")>0){
 			this.dateFinyyyymmjj=dateFinyyyymmjjin;
 		}
 	}
@@ -103,6 +112,14 @@ public class GroupeDePhoto
 
     @Override
     public String toString() {
+        return "" +
+                "" + dateDebyyyymmjj +
+                "" + dateFinyyyymmjj +
+                " (" + String.format("%04d", nbFichier) + ")" +
+                " " + name ;
+    }
+
+    public String toStringInfo() {
         return "GroupeDePhoto{" +
                 "nbFichier=" + nbFichier +
                 ", dateDebyyyymmjj='" + dateDebyyyymmjj + '\'' +
@@ -119,4 +136,16 @@ public class GroupeDePhoto
     public ObservableList<String> getListFiles() {
         return listFiles;
     }
+
+	public String getKeyOrder() {
+		return keyOrder;
+	}
+
+
+    public static int compare(GroupeDePhoto a, GroupeDePhoto b)
+    {
+        return (a.dateDebyyyymmjj + a.dateFinyyyymmjj).compareTo((b.dateDebyyyymmjj + b.dateFinyyyymmjj));
+    }
+
+
 }

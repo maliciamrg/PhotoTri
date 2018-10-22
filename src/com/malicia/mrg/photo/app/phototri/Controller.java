@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -45,6 +46,8 @@ public class Controller {
 
     @FXML
     void chooseRepertoryGroup() {
+        folderSelect.getSelectionModel().clearSelection();
+        folderSelect.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         ChooseRepertoryGroup.setText(mod.getRepertory());
         folderSelect.setItems(mod.populateRepertory(ChooseRepertoryGroup.getText()));
     }
@@ -57,6 +60,9 @@ public class Controller {
 
     @FXML
     void previewPhoto() {
+
+        folderSelect.getSelectionModel().clearSelection();
+
         FileInputStream input = null;
         String fichier = fileSelect.getSelectionModel().getSelectedItem().toString();
         try {
@@ -67,6 +73,9 @@ public class Controller {
             imagefileSelect.setImage(image);
 
             fileDateTime.setText(ExifReader.printImageTags (fichier));
+
+            folderSelect.getSelectionModel().select();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
