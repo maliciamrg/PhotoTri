@@ -45,6 +45,22 @@ public class Model extends Window {
 
 
     public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
+
+//AgLibraryRootFolder
+//AgLibraryFolder
+//AgLibraryFile
+//Adobe_images
+//Adobe_imageProperties
+//
+//select  min(e.captureTime) , max(e.captureTime) , c.absolutePath , b.pathFromRoot  from AgLibraryFile a
+//inner join AgLibraryFolder b
+//on a.folder = b.id_local
+//inner join AgLibraryRootFolder c
+//on b.rootFolder = c.id_local
+//inner join Adobe_images e
+//on a.id_local = e.rootFile
+//group by  c.absolutePath , b.pathFromRoot
+
  //       MessagePerso.makeText(Main.getPrimaryStage(),"populateRepertory") ;
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
