@@ -44,6 +44,15 @@ public class GroupeDePhoto
 
 	String path;
 	String name;
+
+	public String getDateDebyyyymmjj() {
+		return dateDebyyyymmjj;
+	}
+
+	public String getDateFinyyyymmjj() {
+		return dateFinyyyymmjj;
+	}
+
 	String dateDebyyyymmjj;
 	String dateFinyyyymmjj;
 
