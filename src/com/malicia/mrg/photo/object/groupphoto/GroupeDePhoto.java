@@ -16,6 +16,22 @@ import java.util.stream.Stream;
 public class GroupeDePhoto
 {
 
+	public GroupeDePhoto(String pathin, String dateDebyyyymmjj, String dateFinyyyymmjj, int nbFile) {
+		this.path = pathin;
+		String partpath=path;
+
+		String[] nameSplit = partpath.split(Pattern.quote("/"));
+		String nameOne = nameSplit[nameSplit.length - 1];
+		if (nameOne.toLowerCase().compareTo("rejet")==0) {
+			nameOne = nameSplit[nameSplit.length - 2]+"_"+nameSplit[nameSplit.length - 1];
+		}
+		this.name=nameOne;
+		initialize();
+		this.nbFichier =nbFile;
+		this.dateDebyyyymmjj=dateDebyyyymmjj;
+		this.dateFinyyyymmjj=dateFinyyyymmjj;
+	}
+
 	public int getNbFichier() {
 		return nbFichier;
 	}
@@ -119,7 +135,7 @@ public class GroupeDePhoto
     public String toString() {
         return "" +
                 "" + dateDebyyyymmjj +
-                "" + dateFinyyyymmjj +
+                " " + dateFinyyyymmjj +
                 " (" + String.format("%04d", nbFichier) + ")" +
                 " " + name ;
     }

@@ -46,6 +46,8 @@ public class Controller {
 
     @FXML
     private ToggleButton choixDuSens;
+    private FileInputStream fluxPreview;
+    private Image imagePreview;
 
     @FXML
     void switchSens() {}
@@ -58,7 +60,7 @@ public class Controller {
     public void initialize() {
         ChooseRepertoryNew.setText("D:\\50_Phototheque\\@New");
         chooseRepertoryNewFromChoose();
-        ChooseRepertoryGroup.setText("D:\\50_Phototheque");
+        ChooseRepertoryGroup.setText("D:\\70_Catalogs\\Catalog_Phototheque\\70_Catalog_Phototheque.lrcat");
         chooseRepertoryGroupFromChoose();
     }
 
@@ -71,7 +73,8 @@ public class Controller {
     private void chooseRepertoryGroupFromChoose() {
         folderSelect.getSelectionModel().clearSelection();
         folderSelect.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        popRepertory = mod.populateRepertory(ChooseRepertoryGroup.getText());
+        //popRepertory = mod.populateRepertory(ChooseRepertoryGroup.getText());
+        popRepertory = mod.populateRepertoryBySqllite(ChooseRepertoryGroup.getText());
         folderSelect.setItems(popRepertory);
     }
 
@@ -103,7 +106,9 @@ public class Controller {
         //ExifReader exi = new ExifReader(new String[]{fichier});
 
         try {
-            imagefileSelect.setImage(new Image(new FileInputStream(fichier)));
+            fluxPreview = new FileInputStream(fichier);
+            imagePreview = new Image(fluxPreview);
+            imagefileSelect.setImage(imagePreview);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -132,6 +137,17 @@ public class Controller {
 
     @FXML
     void actionTransfertFile() {
+
+
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File Rfile = new File(classLoader.getResource("404error.jpeg").getFile());
+            fluxPreview = new FileInputStream(Rfile);
+            imagePreview = new Image(fluxPreview);
+            imagefileSelect.setImage(imagePreview);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         int numeroFileSelect = fileSelect.getSelectionModel().getSelectedIndex();
         int numeroRepertorySelect = folderSelect.getSelectionModel().getSelectedIndex();

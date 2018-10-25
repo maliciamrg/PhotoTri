@@ -3,6 +3,7 @@ package com.malicia.mrg.photo.app.phototri;
 import com.malicia.mrg.object.MessagePerso;
 import com.malicia.mrg.object.Toast;
 import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
+import com.malicia.mrg.sqlite.SQLiteJDBCDriverConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -14,6 +15,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,8 +48,11 @@ public class Model extends Window {
     }
 
 
-    public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
+    public ObservableList<GroupeDePhoto> populateRepertoryBySqllite(String databaseFile) {
 
+        ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
+        SimpleDateFormat formattertodate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formattertoyymmdd = new SimpleDateFormat("yyyyMMdd");
 //AgLibraryRootFolder
 //AgLibraryFolder
 //AgLibraryFile
@@ -60,8 +67,48 @@ public class Model extends Window {
 //inner join Adobe_images e
 //on a.id_local = e.rootFile
 //group by  c.absolutePath , b.pathFromRoot
+        SQLiteJDBCDriverConnection sql = new SQLiteJDBCDriverConnection();
+        sql.connect(databaseFile);
+        sql.select("select  min(e.captureTime) , max(e.captureTime) , c.absolutePath , b.pathFromRoot , count(*) " +
+                "from AgLibraryFile a " +
+                "inner join AgLibraryFolder b " +
+                "on a.folder = b.id_local " +
+                "inner join AgLibraryRootFolder c " +
+                "on b.rootFolder = c.id_local " +
+                "inner join Adobe_images e " +
+                "on a.id_local = e.rootFile " +
+                "group by  c.absolutePath , b.pathFromRoot");
+        try {
+            while (sql.rs.next()) {
 
- //       MessagePerso.makeText(Main.getPrimaryStage(),"populateRepertory") ;
+                String x = sql.rs.getString(3) + sql.rs.getString(4);
+                String pathString = x.toLowerCase();
+                if (!pathString.contains("rejet") &&
+                        !pathString.contains("@") &&
+                        !pathString.contains("&") &&
+                        !pathString.contains("!!") ) {
+                    String dateDeb = null;
+                    try {
+                        dateDeb = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(1)));
+                        String dateFin = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(2)));
+                        GroupeDePhoto dePhoto = new GroupeDePhoto(x.toString(), dateDeb, dateFin,sql.rs.getInt(5));
+                        //       MessagePerso.addText(dePhoto.toStringInfo());
+                        grpListPhotoRepertoire.add(dePhoto);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                };
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        java.util.Collections.sort(grpListPhotoRepertoire,(o1, o2) -> GroupeDePhoto.compare(o1,o2) );
+        return grpListPhotoRepertoire;
+    }
+
+    public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
+
+        //       MessagePerso.makeText(Main.getPrimaryStage(),"populateRepertory") ;
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         try (Stream<Path> paths = Files.walk(Paths.get(repertoire))) {
             paths

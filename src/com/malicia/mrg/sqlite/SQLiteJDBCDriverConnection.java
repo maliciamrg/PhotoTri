@@ -13,11 +13,11 @@ public class SQLiteJDBCDriverConnection {
     /**
      * Connect to a sample database
      */
-    public static void connect() {
+    public static void connect(String sqlliteDatabase) {
         conn = null;
         try {
             // db parameters
-            String url = "jdbc:sqlite:C:\\Users\\professorX\\Desktop\\70_Catalog_Phototheque.lrcat";
+            String url = "jdbc:sqlite:"+sqlliteDatabase;
             // create a connection to the database
             conn = DriverManager.getConnection(url);
 
