@@ -11,10 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -87,11 +85,25 @@ public class Controller {
     void chooseRepertoryNewFromChoose() {
         popRepNew = mod.populateFile(ChooseRepertoryNew.getText());
         fileSelect.setItems(popRepNew);
-        fileSelect.getItems().addListener(new ListChangeListener() {
+        fileSelect.setCellFactory(param -> new ListCell<String>() {
+            private ImageView imageView = new ImageView();
             @Override
-            public void onChanged(ListChangeListener.Change change) {
-                isTransfertPossible();
-                actionfileSelect();
+            public void updateItem(String name, boolean empty) {
+                super.updateItem(name, empty);
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    try {
+                        imageView.setImage(new Image(new FileInputStream(name)));
+                        imageView.setFitWidth(30);
+                        imageView.setPreserveRatio(true);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    setText(name);
+                    setGraphic(imageView);
+                }
             }
         });
     }
@@ -103,12 +115,11 @@ public class Controller {
         transfertFile.setDisable(true);
 
         String fichier = fileSelect.getSelectionModel().getSelectedItem().toString();
+
         //ExifReader exi = new ExifReader(new String[]{fichier});
 
         try {
-            fluxPreview = new FileInputStream(fichier);
-            imagePreview = new Image(fluxPreview);
-            imagefileSelect.setImage(imagePreview);
+            imagefileSelect.setImage(new Image(new FileInputStream(fichier)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -139,15 +150,15 @@ public class Controller {
     void actionTransfertFile() {
 
 
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            File Rfile = new File(classLoader.getResource("404error.jpeg").getFile());
-            fluxPreview = new FileInputStream(Rfile);
-            imagePreview = new Image(fluxPreview);
-            imagefileSelect.setImage(imagePreview);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ClassLoader classLoader = getClass().getClassLoader();
+//            File Rfile = new File(classLoader.getResource("404error.jpeg").getFile());
+//            fluxPreview = new FileInputStream(Rfile);
+//            imagePreview = new Image(fluxPreview);
+//            imagefileSelect.setImage(imagePreview);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         int numeroFileSelect = fileSelect.getSelectionModel().getSelectedIndex();
         int numeroRepertorySelect = folderSelect.getSelectionModel().getSelectedIndex();
@@ -160,9 +171,23 @@ public class Controller {
         p = null;
 
         try {
-            Path temp = Files.move
-                    (Paths.get(source),
-                            Paths.get(dest));
+
+
+//            Path temp = Files.move
+//                    (Paths.get(source),
+//                            Paths.get(dest));
+
+            FileChannel inputChannel = null;
+            FileChannel outputChannel = null;
+            try {
+                inputChannel = new FileInputStream(source).getChannel();
+                outputChannel = new FileOutputStream(dest).getChannel();
+
+                outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+            } finally {
+                inputChannel.close();
+                outputChannel.close();
+            }
 
             groupeDePhotoDest.addfile(dest);
             folderSelect.refresh();

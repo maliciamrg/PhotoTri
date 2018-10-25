@@ -90,10 +90,7 @@ public class GroupeDePhoto
 
     public Boolean isElegible(String p0)
 	{
-		if (p0.compareTo(dateDebyyyymmjj)>=0 && p0.compareTo(dateFinyyyymmjj)<=0 ){
-			return true;
-		}
-		return false;
+		return p0.compareTo(dateDebyyyymmjj) >= 0 && p0.compareTo(dateFinyyyymmjj) <= 0;
 	}
 
 	public void addfile(String fileName)
