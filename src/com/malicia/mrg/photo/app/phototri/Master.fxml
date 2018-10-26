@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -12,9 +13,10 @@
         <Label layoutX="14.0" layoutY="40.0" text="#New Fichiers nouveaux" />
         <Label layoutX="626.0" layoutY="40.0" text="#Folder Groupes de photo" />
         <Text fx:id="TextDatabaseLigthroom" layoutX="14.0" layoutY="19.0" onMouseClicked="#selectLigthroomDatabase" strokeType="OUTSIDE" strokeWidth="0.0" text="&lt;Clik me&gt; fichier base de donnés LRCAT ligthroom" wrappingWidth="369.13671875" />
-        <ListView fx:id="ListFichierNew" layoutX="13.0" layoutY="66.0" onContextMenuRequested="#playElement" onMouseClicked="#actionFichierNew" prefHeight="724.0" prefWidth="607.0" />
-        <ListView fx:id="ListRepertoirePhoto" layoutX="626.0" layoutY="66.0" onContextMenuRequested="#openFolder" onMouseClicked="#actionRepertoirePhoto" prefHeight="724.0" prefWidth="544.0" />
+        <ListView fx:id="ListFichierNew" layoutX="13.0" layoutY="66.0" onContextMenuRequested="#playElement" onKeyPressed="#fichierKeyPressed" onMouseClicked="#actionFichierNew" prefHeight="724.0" prefWidth="607.0" />
+        <ListView fx:id="ListRepertoirePhoto" layoutX="626.0" layoutY="66.0" onContextMenuRequested="#openFolder" onKeyPressed="#repertoireKeyPressed" onMouseClicked="#actionRepertoirePhoto" prefHeight="724.0" prefWidth="544.0" />
         <Button fx:id="BouttonTransfertFile" layoutX="518.0" layoutY="10.0" mnemonicParsing="false" onAction="#transfertFile" prefHeight="25.0" prefWidth="204.0" text="Transfert #New ==&gt; #Folder" />
       <ToggleButton fx:id="ToggleMasterSelection" layoutX="164.0" layoutY="36.0" mnemonicParsing="false" onAction="#changeMasterSelection" prefHeight="25.0" prefWidth="162.0" text="Master selection #New" />
+      <ProgressBar fx:id="progressBar" layoutX="781.0" layoutY="14.0" prefHeight="18.0" prefWidth="363.0" progress="0.0" />
     </children>
 </AnchorPane>

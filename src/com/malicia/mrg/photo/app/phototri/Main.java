@@ -10,11 +10,12 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 
-    private static Stage pStage;
+    public static Stage pStage;
+    public static Parent root;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("Master.fxml"));
+        root = FXMLLoader.load(getClass().getResource("Master.fxml"));
         pStage = primaryStage;
         primaryStage.setTitle("Photo Tri");
         primaryStage.setScene(new Scene(root));

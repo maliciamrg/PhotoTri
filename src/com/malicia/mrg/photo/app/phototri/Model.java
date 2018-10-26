@@ -144,21 +144,24 @@ public class Model extends Window {
 
                 String x = sql.rs.getString(3) + sql.rs.getString(4) + sql.rs.getString(5);
 
-                try {
-                    String dateDeb;
-                    String dateFin;
-                    if (sql.rs.getString(1) == null ){
-                        dateDeb = "00010101";
-                        dateFin = "20991231";
-                    }else {
-                        dateDeb = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(1)));
-                        dateFin = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(2)));
+                File f = new File(x);
+                if(f.exists()) {
+                    try {
+                        String dateDeb;
+                        String dateFin;
+                        if (sql.rs.getString(1) == null) {
+                            dateDeb = "00010101";
+                            dateFin = "20991231";
+                        } else {
+                            dateDeb = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(1)));
+                            dateFin = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(2)));
+                        }
+                        GroupeDePhoto dePhoto = new GroupeDePhoto(x, dateDeb, dateFin, 1);
+                        //       MessagePerso.addText(dePhoto.toStringInfo());
+                        grpListPhotoFichier.add(dePhoto);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    GroupeDePhoto dePhoto = new GroupeDePhoto(x, dateDeb, dateFin,1);
-                    //       MessagePerso.addText(dePhoto.toStringInfo());
-                    grpListPhotoFichier.add(dePhoto);
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
 
             }
