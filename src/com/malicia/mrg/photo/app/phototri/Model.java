@@ -72,15 +72,50 @@ public class Model extends Window {
 //group by  c.absolutePath , b.pathFromRoot
         SQLiteJDBCDriverConnection sql = new SQLiteJDBCDriverConnection();
         sql.connect(databaseFile);
-        sql.select("select  min(e.captureTime) , max(e.captureTime) , c.absolutePath , b.pathFromRoot , count(*) " +
-                "from AgLibraryFile a " +
-                "inner join AgLibraryFolder b " +
-                "on a.folder = b.id_local " +
-                "inner join AgLibraryRootFolder c " +
-                "on b.rootFolder = c.id_local " +
-                "inner join Adobe_images e " +
-                "on a.id_local = e.rootFile " +
-                "group by  c.absolutePath , b.pathFromRoot");
+//        sql.select("select  min(e.captureTime) , max(e.captureTime) , c.absolutePath , b.pathFromRoot , count(*) " +
+//                "from AgLibraryFile a " +
+//                "inner join AgLibraryFolder b " +
+//                "on a.folder = b.id_local " +
+//                "inner join AgLibraryRootFolder c " +
+//                "on b.rootFolder = c.id_local " +
+//                "inner join Adobe_images e " +
+//                "on a.id_local = e.rootFile " +
+//                "group by  c.absolutePath , b.pathFromRoot");
+
+        sql.execute("DROP TABLE IF EXISTS Repertory;  ");
+
+        sql.execute("DROP TABLE IF EXISTS NewPhoto;  " );
+
+
+        sql.execute("CREATE TEMPORARY TABLE Repertory AS  " +
+                "select  min(e.captureTime) as mint , max(e.captureTime) as maxt , c.absolutePath , b.pathFromRoot  , count(*) " +
+                " from AgLibraryFile a  " +
+                "inner join AgLibraryFolder b  " +
+                "on a.folder = b.id_local  " +
+                "inner join AgLibraryRootFolder c  " +
+                "on b.rootFolder = c.id_local  " +
+                "inner join Adobe_images e  " +
+                "on a.id_local = e.rootFile  " +
+                "Where b.pathFromRoot not like \"%@%\"  " +
+                "and  b.pathFromRoot not like \"%&%\"   " +
+                "and  b.pathFromRoot not like \"%rejet%\"  " +
+                "group by  c.absolutePath , b.pathFromRoot ;  " );
+
+        sql.execute( "CREATE TEMPORARY TABLE NewPhoto AS  " +
+                "select  e.captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
+                "from AgLibraryFile a  " +
+                "inner join AgLibraryFolder b  " +
+                "on a.folder = b.id_local  " +
+                "inner join AgLibraryRootFolder c  " +
+                "on b.rootFolder = c.id_local  " +
+                "inner join Adobe_images e  " +
+                "on a.id_local = e.rootFile  " +
+                "Where b.pathFromRoot like \"@New%\";  ");
+
+        sql.select("SELECT a.* FROM Repertory a  " +
+                "inner join NewPhoto b  " +
+                "on b.captureTime between a.mint and a.maxt;"  +
+                "group by  a.absolutePath , a.pathFromRoot ;");
         try {
             while (sql.rs.next()) {
 

@@ -40,6 +40,47 @@ public class SQLiteJDBCDriverConnection {
     /**
      * select all rows in the warehouses table
      */
+    public int executeUpdate(String sql ){
+
+
+        Statement stmt  = null;
+        try {
+            stmt = conn.createStatement();
+
+            int ret = stmt.executeUpdate(sql);
+
+            return ret;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * select all rows in the warehouses table
+     */
+    public boolean execute(String sql ){
+
+
+        Statement stmt  = null;
+        try {
+            stmt = conn.createStatement();
+
+            boolean ret = stmt.execute(sql);
+
+            return ret;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    /**
+     * select all rows in the warehouses table
+     */
     public void select(String sql ){
 
 
