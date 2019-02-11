@@ -53,6 +53,10 @@ public class Model extends Window {
 
     public ObservableList<GroupeDePhoto> populateRepertoirePhotoBySqllite(String databaseFile) {
 
+        String RepertoireNew = Main.properties.getProperty("RepertoireNew");
+        String RepertoirePhoto = Main.properties.getProperty("RepertoirePhoto");
+
+
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         SimpleDateFormat formattertodate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formattertoyymmdd = new SimpleDateFormat("yyyyMMdd");
@@ -96,9 +100,7 @@ public class Model extends Window {
                 "on b.rootFolder = c.id_local  " +
                 "inner join Adobe_images e  " +
                 "on a.id_local = e.rootFile  " +
-                "Where b.pathFromRoot not like \"%@%\"  " +
-                "and  b.pathFromRoot not like \"%&%\"   " +
-                "and  b.pathFromRoot not like \"%rejet%\"  " +
+                "Where  b.pathFromRoot like \"" + RepertoirePhoto + "%\" " +
                 "group by  c.absolutePath , b.pathFromRoot ;  " );
 
         sql.execute( "CREATE TEMPORARY TABLE NewPhoto AS  " +
@@ -110,9 +112,10 @@ public class Model extends Window {
                 "on b.rootFolder = c.id_local  " +
                 "inner join Adobe_images e  " +
                 "on a.id_local = e.rootFile  " +
-                "Where b.pathFromRoot like \"@New%\";  ");
+                "Where b.pathFromRoot like \"%" + RepertoireNew + "%" + "\";  ");
 
         sql.select("SELECT a.* FROM Repertory a  " +
+//        ";");
                 "inner join NewPhoto b  " +
                 "on b.captureTime between a.mint and a.maxt;"  +
                 "group by  a.absolutePath , a.pathFromRoot ;");
@@ -121,9 +124,9 @@ public class Model extends Window {
 
                 String x = sql.rs.getString(3) + sql.rs.getString(4);
                 String pathString = x.toLowerCase();
-                if (!pathString.contains("rejet") &&
-                        !pathString.contains("@") &&
-                        !pathString.contains("&")  ) {
+                if (!pathString.contains(RepertoireNew.toLowerCase())
+                && pathString.contains(RepertoirePhoto.toLowerCase())
+                ) {
                     try {
                         String dateDeb = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(1)));
                         String dateFin = formattertoyymmdd.format(formattertodate.parse(sql.rs.getString(2)));
@@ -144,6 +147,8 @@ public class Model extends Window {
 
 
     public ObservableList<GroupeDePhoto> populateFichierPhotoBySqllite(String databaseFile) {
+
+        String RepertoireNew = Main.properties.getProperty("RepertoireNew");
 
         ObservableList<GroupeDePhoto> grpListPhotoFichier = FXCollections.observableArrayList();
         SimpleDateFormat formattertodate = new SimpleDateFormat("yyyy-MM-dd");
@@ -173,7 +178,7 @@ public class Model extends Window {
                 "  on b.rootFolder = c.id_local " +
                 " inner join Adobe_images e " +
                 "  on a.id_local = e.rootFile " +
-                " Where b.pathFromRoot like \"@New%\"");
+                " Where b.pathFromRoot like \"" + RepertoireNew + "%" + "\"");
         try {
             while (sql.rs.next()) {
 

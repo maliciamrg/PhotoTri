@@ -173,7 +173,8 @@ public class Controller {
     private ObservableList<GroupeDePhoto> popRepertoirePhoto;
 
     public void initialize() {
-        TextDatabaseLigthroom.setText("D:\\70_Catalogs\\Catalog_Phototheque\\70_Catalog_Phototheque.lrcat");
+        String CatalogLrcat = Main.properties.getProperty("CatalogLrcat");
+        TextDatabaseLigthroom.setText(CatalogLrcat);
         MasterSelectionNew = false;
         populateListFichierNew();
         populateListRepertoirePhoto();
