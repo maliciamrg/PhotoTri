@@ -1,26 +1,17 @@
 package com.malicia.mrg.photo.app.phototri;
 
-import com.malicia.mrg.object.MessagePerso;
-import com.malicia.mrg.object.Toast;
 import com.malicia.mrg.photo.object.groupphoto.GroupeDePhoto;
 import com.malicia.mrg.sqlite.SQLiteJDBCDriverConnection;
+import com.malicia.mrg.sqlite.ShowResultsetInJtable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.stream.Stream;
 
 
 public class Model extends Window {
@@ -55,7 +46,9 @@ public class Model extends Window {
 
         String RepertoireNew = Main.properties.getProperty("RepertoireNew");
         String RepertoirePhoto = Main.properties.getProperty("RepertoirePhoto");
-
+        String TempsAdherenceM = Main.properties.getProperty("TempsAdherenceM");
+        String TempsAdherenceP = Main.properties.getProperty("TempsAdherenceP");
+        String GroupingTime = Main.properties.getProperty("GroupingTime");
 
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         SimpleDateFormat formattertodate = new SimpleDateFormat("yyyy-MM-dd");
@@ -90,9 +83,11 @@ public class Model extends Window {
 
         sql.execute("DROP TABLE IF EXISTS NewPhoto;  " );
 
+        sql.execute("DROP TABLE IF EXISTS GroupNewPhoto;  " );
+
 
         sql.execute("CREATE TEMPORARY TABLE Repertory AS  " +
-                "select  min(e.captureTime) as mint , max(e.captureTime) as maxt , c.absolutePath , b.pathFromRoot  , count(*) " +
+                "select e.captureTime as ortime ,  strftime('%s', DATETIME( e.captureTime,"+TempsAdherenceM+")) as mint , strftime('%s', DATETIME(e.captureTime,"+TempsAdherenceP+")) as maxt , c.absolutePath , b.pathFromRoot   " +
                 " from AgLibraryFile a  " +
                 "inner join AgLibraryFolder b  " +
                 "on a.folder = b.id_local  " +
@@ -101,10 +96,11 @@ public class Model extends Window {
                 "inner join Adobe_images e  " +
                 "on a.id_local = e.rootFile  " +
                 "Where  b.pathFromRoot like \"" + RepertoirePhoto + "%\" " +
-                "group by  c.absolutePath , b.pathFromRoot ;  " );
+                " ;");
+//                "group by  c.absolutePath , b.pathFromRoot ;  " );
 
         sql.execute( "CREATE TEMPORARY TABLE NewPhoto AS  " +
-                "select  e.captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
+                "select  strftime('%s', e.captureTime) as captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
                 "from AgLibraryFile a  " +
                 "inner join AgLibraryFolder b  " +
                 "on a.folder = b.id_local  " +
@@ -114,15 +110,39 @@ public class Model extends Window {
                 "on a.id_local = e.rootFile  " +
                 "Where b.pathFromRoot like \"%" + RepertoireNew + "%" + "\";  ");
 
-        sql.select("SELECT a.* FROM Repertory a  " +
+
+
+//TODO a faire
+        sql.execute( "CREATE TEMPORARY TABLE GroupNewPhoto AS  " +
+                "select  strftime('%s', e.captureTime) as captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
+                "from AgLibraryFile a  " +
+                "inner join AgLibraryFolder b  " +
+                "on a.folder = b.id_local  " +
+                "inner join AgLibraryRootFolder c  " +
+                "on b.rootFolder = c.id_local  " +
+                "inner join Adobe_images e  " +
+                "on a.id_local = e.rootFile  " +
+                "Where b.pathFromRoot like \"%" + RepertoireNew + "%" + "\";  ");
+
+
+
+
+
+        sql.select("SELECT distinct  " +
+//              " a.ortime, a.mint, b.captureTime, a.maxt ," +
+//              " a.ortime, a.mint, b.captureTime, a.maxt ," +
+                " a.absolutePath , b.pathFromRoot ,b.originalFilename , a.pathFromRoot  FROM Repertory a  " +
 //        ";");
                 "inner join NewPhoto b  " +
                 "on b.captureTime between a.mint and a.maxt;"  +
-                "group by  a.absolutePath , a.pathFromRoot ;");
+                "order by  a.absolutePath , a.pathFromRoot ;");
         try {
+
+            new ShowResultsetInJtable(sql,"auto match extract Ligthroom","@new->!") .invoke();
+
             while (sql.rs.next()) {
 
-                String x = sql.rs.getString(3) + sql.rs.getString(4);
+                String x = sql.rs.getString(1) + sql.rs.getString(4);
                 String pathString = x.toLowerCase();
                 if (!pathString.contains(RepertoireNew.toLowerCase())
                 && pathString.contains(RepertoirePhoto.toLowerCase())
@@ -145,7 +165,7 @@ public class Model extends Window {
         return grpListPhotoRepertoire;
     }
 
-
+    
     public ObservableList<GroupeDePhoto> populateFichierPhotoBySqllite(String databaseFile) {
 
         String RepertoireNew = Main.properties.getProperty("RepertoireNew");
@@ -211,6 +231,8 @@ public class Model extends Window {
         java.util.Collections.sort(grpListPhotoFichier,(o1, o2) -> GroupeDePhoto.compare(o1,o2) );
         return grpListPhotoFichier;
     }
+
+
 
 //    public ObservableList<GroupeDePhoto> populateRepertory(String repertoire) {
 //
