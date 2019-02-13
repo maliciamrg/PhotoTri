@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PhotoTri:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PhotoTri_jar</output-path>
+    <root id="archive" name="PhotoTri.jar">
+      <element id="module-output" name="PhotoTri" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/external libraries/xmpcore-5.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/external libraries/sqlite-jdbc-3.23.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/external libraries/metadata-extractor-2.11.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

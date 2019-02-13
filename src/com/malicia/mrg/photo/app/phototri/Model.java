@@ -9,7 +9,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -44,11 +47,11 @@ public class Model extends Window {
 
     public ObservableList<GroupeDePhoto> populateRepertoirePhotoBySqllite(String databaseFile) {
 
+        Statement stmt = null;
+
         String RepertoireNew = Main.properties.getProperty("RepertoireNew");
         String RepertoirePhoto = Main.properties.getProperty("RepertoirePhoto");
-        String TempsAdherenceM = Main.properties.getProperty("TempsAdherenceM");
-        String TempsAdherenceP = Main.properties.getProperty("TempsAdherenceP");
-        String GroupingTime = Main.properties.getProperty("GroupingTime");
+        String TempsAdherence = Main.properties.getProperty("TempsAdherence");
 
         ObservableList<GroupeDePhoto> grpListPhotoRepertoire = FXCollections.observableArrayList();
         SimpleDateFormat formattertodate = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,6 +72,7 @@ public class Model extends Window {
 //group by  c.absolutePath , b.pathFromRoot
         SQLiteJDBCDriverConnection sql = new SQLiteJDBCDriverConnection();
         sql.connect(databaseFile);
+
 //        sql.select("select  min(e.captureTime) , max(e.captureTime) , c.absolutePath , b.pathFromRoot , count(*) " +
 //                "from AgLibraryFile a " +
 //                "inner join AgLibraryFolder b " +
@@ -85,9 +89,9 @@ public class Model extends Window {
 
         sql.execute("DROP TABLE IF EXISTS GroupNewPhoto;  " );
 
-
+//
         sql.execute("CREATE TEMPORARY TABLE Repertory AS  " +
-                "select e.captureTime as ortime ,  strftime('%s', DATETIME( e.captureTime,"+TempsAdherenceM+")) as mint , strftime('%s', DATETIME(e.captureTime,"+TempsAdherenceP+")) as maxt , c.absolutePath , b.pathFromRoot   " +
+                "select e.captureTime as ortime ,  strftime('%s', DATETIME( e.captureTime,\"-"+TempsAdherence+"\")) as mint , strftime('%s', DATETIME(e.captureTime,\"+"+TempsAdherence+"\")) as maxt , c.absolutePath , b.pathFromRoot   " +
                 " from AgLibraryFile a  " +
                 "inner join AgLibraryFolder b  " +
                 "on a.folder = b.id_local  " +
@@ -100,7 +104,7 @@ public class Model extends Window {
 //                "group by  c.absolutePath , b.pathFromRoot ;  " );
 
         sql.execute( "CREATE TEMPORARY TABLE NewPhoto AS  " +
-                "select  strftime('%s', e.captureTime) as captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
+                "select  strftime('%s', e.captureTime) as captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename ,e.captureTime as captureTimeOrig  " +
                 "from AgLibraryFile a  " +
                 "inner join AgLibraryFolder b  " +
                 "on a.folder = b.id_local  " +
@@ -111,21 +115,68 @@ public class Model extends Window {
                 "Where b.pathFromRoot like \"%" + RepertoireNew + "%" + "\";  ");
 
 
-
-//TODO a faire
+//group photo
         sql.execute( "CREATE TEMPORARY TABLE GroupNewPhoto AS  " +
-                "select  strftime('%s', e.captureTime) as captureTime , c.absolutePath , b.pathFromRoot ,a.originalFilename   " +
-                "from AgLibraryFile a  " +
-                "inner join AgLibraryFolder b  " +
-                "on a.folder = b.id_local  " +
-                "inner join AgLibraryRootFolder c  " +
-                "on b.rootFolder = c.id_local  " +
-                "inner join Adobe_images e  " +
-                "on a.id_local = e.rootFile  " +
-                "Where b.pathFromRoot like \"%" + RepertoireNew + "%" + "\";  ");
+                "select a.* , '0' as numeroGroup  , strftime('%s', DATETIME( a.captureTimeOrig,\"+"+TempsAdherence+"\")) as captureTimeAdherence " +
+                "from NewPhoto a  " +
+                "order by a.capturetime ; ");
+
+        try {
+            stmt = SQLiteJDBCDriverConnection.conn.createStatement();
+            ResultSet rsUpd = stmt.executeQuery(
+               "SELECT distinct  " +
+                    " * FROM GroupNewPhoto a  " +
+                    ";");
 
 
+            sql.select("SELECT distinct  " +
+                    " * FROM GroupNewPhoto a  " +
+                    ";");
 
+            long captureTime =0;
+            long captureTimeAdherence =  0;
+            long numeroGroup = 0;
+            long captureTimePrevious = 0;
+            long captureTimeAdherencePrevious = 0;
+            long numeroGroupPrevious = 0;
+            while (rsUpd.next()) {
+
+                captureTime = rsUpd.getLong("captureTime");
+                captureTimeAdherence =rsUpd.getLong("captureTimeAdherence");
+                //numeroGroup = rsUpd.getLong("numeroGroup");
+
+                if (captureTimePrevious < captureTime && captureTime < captureTimeAdherencePrevious ){
+                    numeroGroup = numeroGroupPrevious;
+                } else {
+                    numeroGroup = numeroGroupPrevious;
+                    numeroGroup++;
+                }
+
+                boolean ret = sql.execute("UPDATE GroupNewPhoto  " +
+                        " set numeroGroup = \"" + numeroGroup + "\"  " +
+                        " where absolutePath = \"" + rsUpd.getString("absolutePath") + "\"  " +
+                        "and pathFromRoot = \"" + rsUpd.getString("pathFromRoot") + "\"  " +
+                        "and originalFilename = \"" + rsUpd.getString("originalFilename") + "\"  " +
+                        " ");
+
+//                rsUpd.updateString("numeroGroup",String.valueOf(numeroGroup));
+///                rsUpd.updateRow();
+
+                captureTimePrevious=captureTime;
+                captureTimeAdherencePrevious= captureTimeAdherence;
+                numeroGroupPrevious=numeroGroup;
+
+            }
+
+            sql.select("SELECT distinct  " +
+                    " * FROM GroupNewPhoto a  " +
+                    ";");
+
+            new ShowResultsetInJtable( sql,"auto group @new","group @new") .invoke();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
         sql.select("SELECT distinct  " +
@@ -274,5 +325,60 @@ public class Model extends Window {
 //        alert.showAndWait();
 //    }
 
-
+    public String[] getColumnNameArray(ResultSet rs) {
+        String sArr[] = null;
+        try {
+            ResultSetMetaData rm = rs.getMetaData();
+            String sArray[] = new String[rm.getColumnCount()];
+            for (int ctr = 1; ctr <= sArray.length; ctr++) {
+                String s = rm.getColumnName(ctr);
+                sArray[ctr - 1] = s;
+            }
+            return sArray;
+        } catch (Exception e) {
+            System.out.println(e);
+            return sArr;
+        }
+    }
+    public String[] getColumnTypeArray(ResultSet rs) {
+        String sArr[] = null;
+        try {
+            ResultSetMetaData rm = rs.getMetaData();
+            String sArray[] = new String[rm.getColumnCount()];
+            for (int ctr = 1; ctr <= sArray.length; ctr++) {
+                String s = rm.getColumnTypeName(ctr);
+                sArray[ctr - 1] = s;
+            }
+            return sArray;
+        } catch (Exception e) {
+            System.out.println(e);
+            return sArr;
+        }
+    }
+    public int[] getType(ResultSet rs) {
+        int iType[] = null;
+        try {
+            ResultSetMetaData rm = rs.getMetaData();
+            int iArray[] = new int[rm.getColumnCount()];
+            for (int ctr = 1; ctr <= iArray.length; ctr++) {
+                int iVal = rm.getColumnType(ctr);
+                iArray[ctr - 1] = iVal;
+            }
+            return iArray;
+        } catch (Exception e) {
+            System.out.println(e);
+            return iType;
+        }
+    }
+    public int getColumnCount(ResultSet rs) {
+        int iOutput = 0;
+        try {
+            ResultSetMetaData rsMetaData = rs.getMetaData();
+            iOutput = rsMetaData.getColumnCount();
+        } catch (Exception e) {
+            System.out.println(e);
+            return iOutput = -1;
+        }
+        return iOutput;
+    }
 }

@@ -7,7 +7,7 @@ import java.sql.*;
  * @author sqlitetutorial.net
  */
 public class SQLiteJDBCDriverConnection {
-    private static Connection conn;
+    public static Connection conn;
     public ResultSet rs;
 
     /**
@@ -68,7 +68,8 @@ public class SQLiteJDBCDriverConnection {
             stmt = conn.createStatement();
 
             boolean ret = stmt.execute(sql);
-
+            int nb = stmt.getUpdateCount();
+//            conn.commit();
             return ret;
 
         } catch (SQLException e) {
